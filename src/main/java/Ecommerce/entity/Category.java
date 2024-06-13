@@ -19,11 +19,14 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Category {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private String name;
+    private String gender;
     private LocalDate createDate;
     private LocalDate updateDate;
     private boolean isDeleted;
+
 }

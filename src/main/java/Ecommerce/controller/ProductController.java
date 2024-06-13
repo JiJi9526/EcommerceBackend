@@ -1,5 +1,6 @@
 package Ecommerce.controller;
 
+import Ecommerce.dto.NewProductRequest;
 import Ecommerce.dto.ProductGroup;
 import Ecommerce.entity.Product;
 import Ecommerce.service.ProductService;
@@ -32,9 +33,9 @@ public class ProductController {
         return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<Product> updateProduct(@RequestBody Product product) {
-        Product updatedProduct = productService.updateProduct(product);
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Product> updateProduct(@PathVariable UUID id, @RequestBody NewProductRequest newProductRequest) {
+        Product updatedProduct = productService.updateProduct( newProductRequest, id);
         return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
     }
 
@@ -48,6 +49,12 @@ public class ProductController {
     public ResponseEntity<List<ProductGroup>> getAllProducts() {
         List<ProductGroup> productGroups = productService.getAllProducts();
         return new ResponseEntity<>(productGroups, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductGroup> getOneProduct(@PathVariable UUID id){
+        ProductGroup productGroup=productService.getOneProduct(id);
+        return new ResponseEntity<>(productGroup, HttpStatus.OK);
     }
 
     @GetMapping("/category/{categoryId}")

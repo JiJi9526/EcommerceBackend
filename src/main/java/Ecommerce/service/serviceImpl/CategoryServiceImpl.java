@@ -22,6 +22,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryResponse createCategory(Category categoryRequest) {
         Category category = new Category();
         category.setName(categoryRequest.getName());
+        category.setGender(categoryRequest.getGender());
         category.setCreateDate(LocalDate.now());
         category.setUpdateDate(LocalDate.now());
         categoryRepo.save(category);
@@ -32,6 +33,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryResponse updateCategory(UUID id, Category categoryRequest) {
         Category category= categoryRepo.findCategoryById(id);
         category.setName(categoryRequest.getName());
+        category.setGender(categoryRequest.getGender());
         category.setUpdateDate(LocalDate.now());
         categoryRepo.save(category);
         return modelMapper.map(category, CategoryResponse.class);

@@ -7,7 +7,6 @@ import Ecommerce.service.UsersService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -18,14 +17,15 @@ import java.util.UUID;
 public class UsersServiceImpl implements UsersService {
     private final UsersRepo usersRepo;
     @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ModelMapper modelMapper;
 
     @Override
     public Users createUser(Users user) {
         Users newUser = new Users();
+        newUser.setFirstName(user.getFirstName());
+        newUser.setLastName(user.getLastName());
         newUser.setEmail(user.getEmail());
-        newUser.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        newUser.setPassword(user.getPassword());
         newUser.setRole("USER");
         newUser.setCreateDate(new Date());
         newUser.setUpdateDate(new Date());

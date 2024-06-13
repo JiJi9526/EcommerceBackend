@@ -27,15 +27,25 @@ public class Product {
 
     private String name;
     private String description;
-    private boolean isMen;
+    private Boolean isMen;
     private double price;
-    private String size;
-    private String color;
-    private int quantity;
+
+    @Enumerated(EnumType.STRING)
+    public ProductSize size;
+    public enum ProductSize {
+        XS, S, M, L, XL,
+    }
+
+    @Enumerated(EnumType.STRING)
+    public ProductColor color;
+    public enum ProductColor {
+        Black, White, Grey, Blue,
+    }
+
     private Date createDate;
     private Date updateDate;
     private boolean isDeleted;
-
+    private String imageUrl;
     @ManyToMany(mappedBy = "products")
     private List<Orders> orders;
 }

@@ -1,7 +1,10 @@
 package Ecommerce.service.serviceImpl;
 
+import Ecommerce.dto.NewProductRequest;
 import Ecommerce.dto.ProductGroup;
+import Ecommerce.entity.Category;
 import Ecommerce.entity.Product;
+import Ecommerce.repo.CategoryRepo;
 import Ecommerce.repo.ProductRepo;
 import Ecommerce.service.ProductService;
 import lombok.AllArgsConstructor;
@@ -20,36 +23,39 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepo productRepo;
     private final ModelMapper modelMapper;
+    private final CategoryRepo categoryRepo;
 
     @Override
-    public Product createProduct(Product product) {
+    public Product createProduct(NewProductRequest newProductRequest) {
         Product newProduct = new Product();
-        newProduct.setCategory(product.getCategory());
-        newProduct.setName(product.getName());
-        newProduct.setDescription(product.getDescription());
-        newProduct.setMen(product.isMen());
-        newProduct.setPrice(product.getPrice());
-        newProduct.setSize(product.getSize());
-        newProduct.setColor(product.getColor());
-        newProduct.setQuantity(product.getQuantity());
+        Category category = categoryRepo.findById(newProductRequest.getCategoryId()).orElseThrow(() -> new RuntimeException("Category not found"));
+        newProduct.setCategory(category);
+        newProduct.setName(newProductRequest.getName());
+        newProduct.setDescription(newProductRequest.getDescription());
+        newProduct.setIsMen(newProductRequest.getIsMen());
+        newProduct.setPrice(newProductRequest.getPrice());
+        newProduct.setSize(newProductRequest.getSize());
+        newProduct.setColor(newProductRequest.getColor());
+        newProduct.setImageUrl(newProductRequest.getImageUrl());
         newProduct.setCreateDate(new Date());
         newProduct.setUpdateDate(new Date());
-        return newProduct;
+        return productRepo.save(newProduct);
     }
 
     @Override
-    public Product updateProduct(Product product) {
-        Product retrievedProduct = productRepo.findById(product.getId())
+    public Product updateProduct(NewProductRequest newProductRequest, UUID id) {
+        Product retrievedProduct = productRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
-        retrievedProduct.setCategory(product.getCategory());
-        retrievedProduct.setName(product.getName());
-        retrievedProduct.setDescription(product.getDescription());
-        retrievedProduct.setMen(product.isMen());
-        retrievedProduct.setPrice(product.getPrice());
-        retrievedProduct.setSize(product.getSize());
-        retrievedProduct.setColor(product.getColor());
-        retrievedProduct.setQuantity(product.getQuantity());
+        Category category = categoryRepo.findById(newProductRequest.getCategoryId()).orElseThrow(null);
+        retrievedProduct.setCategory(newProductRequest.getCategoryId() != null ? category : retrievedProduct.getCategory());
+        retrievedProduct.setName(newProductRequest.getName() != null ? newProductRequest.getName() : retrievedProduct.getName());
+        retrievedProduct.setDescription(newProductRequest.getDescription() != null ? newProductRequest.getDescription() : retrievedProduct.getDescription());
+        retrievedProduct.setIsMen(newProductRequest.getIsMen() != null ? newProductRequest.getIsMen() : retrievedProduct.getIsMen());
+        retrievedProduct.setPrice(newProductRequest.getPrice() != 0 ? newProductRequest.getPrice() : retrievedProduct.getPrice());
+        retrievedProduct.setSize(newProductRequest.getSize() != null ? newProductRequest.getSize() : retrievedProduct.getSize());
+        retrievedProduct.setColor(newProductRequest.getColor() != null ? newProductRequest.getColor() : retrievedProduct.getColor());
+        retrievedProduct.setImageUrl(newProductRequest.getImageUrl() != null ? newProductRequest.getImageUrl() : retrievedProduct.getImageUrl());
         retrievedProduct.setUpdateDate(new Date());
 
         return productRepo.save(retrievedProduct);
@@ -76,8 +82,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductGroup> getProductsByCategory(UUID category) {
-        List<Product> products = productRepo.findByCategoryId(category);
+    public ProductGroup getOneProduct(UUID id) {
+        Product product=productRepo.findProductById(id);
+        return modelMapper.map(product, ProductGroup.class);
+    }
+
+    @Override
+    public List<ProductGroup> getProductsByCategory(UUID categoryId) {
+        List<Product> products = productRepo.findByCategoryId(categoryId);
         Map<String, List<Product>> groupedProducts = products.stream()
                 .collect(Collectors.groupingBy(p -> p.getName() + p.getName()));
         List<ProductGroup> productGroups = new ArrayList<>();
