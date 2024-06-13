@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-    url: jdbc:sqlserver://localhost:1433;databaseName=ECOMMERCE_DB;encrypt=true;trustServerCertificate=true;
+    url: jdbc:sqlserver://localhost:1433;databaseName=JIJI_DB;encrypt=true;trustServerCertificate=true;
     username: sa
-    password: root
+    password: dockerStrongPwd123
     hikari:
       maximum-pool-size: 100
       connection-timeout: 30000

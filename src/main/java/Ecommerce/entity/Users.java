@@ -30,7 +30,7 @@ public class Users {
     private String firstName;
     private String lastName;
     private String email;
-    private int password;
+    private String password;
     private String role;
     private Date createDate;
     private Date updateDate;

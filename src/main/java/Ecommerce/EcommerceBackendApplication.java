@@ -10,8 +10,4 @@ public class EcommerceBackendApplication {
     public static void main(String[] args) {
         SpringApplication.run(EcommerceBackendApplication.class, args);
     }
-    @Bean
-    ModelMapper modelMapper(){
-        return new ModelMapper();
-    }
 }
